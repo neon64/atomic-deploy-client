@@ -29,7 +29,7 @@ class ListCommand extends Command {
             $output->writeln('Server differs: ' . $server);
         }
 
-        $deployments = explode("\n", $run->runCommandOnServer('list', ['captureOutput' => true]));
+        $deployments = $run->listDeploymentsOnServer();
         $output->writeln("\n" . '<info>All versions</info>:');
         foreach($deployments as $deployment) {
             $output->writeln(' - ' . $git->getCommitInfo($deployment));

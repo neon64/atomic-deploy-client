@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use AtomicDeploy\Client\TaskManager;
 
 class UseCommand extends Command {
 
@@ -22,7 +23,7 @@ class UseCommand extends Command {
         $version = $input->getArgument('version');
         if($version == null) {
             $helper = $this->getHelper('question');
-            $versions = $deployments = explode("\n", $run->runCommandOnServerCapture('list'));
+            $versions = $run->listDeploymentsOnServer();
             $question = new ChoiceQuestion(
                 'Please select the version to use:',
                 $versions,

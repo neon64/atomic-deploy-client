@@ -23,7 +23,7 @@ class CleanupCommand extends Command {
         $git = new Git($this->getApplication()->getConfig(), $output);
 
         $exclude = $git->getCurrentCommitOnServer($run);
-        $deployments = explode("\n", $run->runCommandOnServer('list', ['captureOutput' => true]));
+        $deployments = $run->listDeploymentsOnServer();
         $toRemove = [];
         foreach($deployments as $item) {
             if($item !== $exclude) {
@@ -48,7 +48,7 @@ class CleanupCommand extends Command {
                     return;
                 }
             }
-            $run->runCommandOnServer('delete ' . $item, ['log' => true]);
+            $run->onServer('rm ' . $item);
         }
     }
 

@@ -32,7 +32,7 @@ class PushCommand extends Command {
         $head = $run->getCurrentCommit();
         $output->writeln('<info>Current commit hash:</info> ' . $head);
 
-        $deployments = explode("\n", $run->runCommandOnServerCapture('list'));
+        $deployments = $run->listDeploymentsOnServer();
         if(in_array($head, $deployments)) {
             $output->writeln('<info>Commit already deployed</info>');
             if($input->getOption('force')) {
@@ -41,16 +41,16 @@ class PushCommand extends Command {
                 return;
             }
         } else {
-            $run->runCommandOnServer('rename ' . $next. ' ' . $head);
+            $run->onServer('mv ' . $next. ' ' . $head);
         }
 
-        $run->runCommandOnServer('copy ' . $current . ' ' . $head, ['useBuffer' => false]);
+        $run->onServer('cp ' . $current . ' ' . $head, ['useBuffer' => false]);
         $run->runCommandOnClient($this->getApplication(), 'git:ftp push ' . $head);
         $composerTransferInstalled = $run->runCommandOnClient($this->getApplication(), 'composer:transfer-installed ' . $head);
         if($composerTransferInstalled->numTransferred > 0 || $input->getOption('force')) {
-            $run->runCommandOnServer('composer:run-script ' . $head . ' post-update-cmd');
+            $run->onServer('composer:run-script ' . $head . ' post-update-cmd');
         }
-        $run->runCommandOnServer('link:update-shared ' . $head . ' ' . $config['path.shared']);
+        $run->onServer('link:update-shared ' . $head . ' ' . $config['path.shared']);
 
         if($input->isInteractive()) {
             $helper = $this->getHelper('question');
@@ -65,7 +65,7 @@ class PushCommand extends Command {
             $output->writeln('Beaming it up, Scotty');
         }
 
-        $run->runCommandOnServer('link:update ' . $current . ' ' . $head);
+        $run->onServer('link:update ' . $current . ' ' . $head);
 
         $output->writeln('');
         $output->writeln("========================================\n" .
@@ -74,7 +74,7 @@ class PushCommand extends Command {
         $output->writeln("\nCommit " . $head . " has been deployed successfully.\nYou will now be able to use the new system.");
         $output->writeln("This script will now run some extra tasks in preparation for the next deployment.\nYou may cancel them if you want, but it will just make things slower for next time.");
 
-        $run->runCommandOnServer('copy ' . $current . ' ' . $next, ['useBuffer' => false]);
+        $run->onServer('cp ' . $current . ' ' . $next, ['useBuffer' => false]);
     }
 
 }

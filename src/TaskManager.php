@@ -17,6 +17,18 @@ class TaskManager {
         $this->output = $output;
     }
 
+    public function listDeploymentsOnServer() {
+        $skip = [$this->config['path.shared'], $this->config['path.current'], $this->config['path.next']];
+        $deployments = explode("\n", $this->runCommandOnServer('ls .', ['captureOutput' => true]));
+        foreach($deployments as $deployment) {
+            if(in_array($deployment, $skip)) {
+                continue;
+            }
+            $return[] = $deployment;
+        }
+        return $deployments;
+    }
+
     public function runShellCommandOnClient($command, $currentWorkingDirectory = null) {
         $process = new Process($command, $currentWorkingDirectory);
         $process->setTimeout(0);
@@ -30,6 +42,10 @@ class TaskManager {
         if(!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
+    }
+
+    public function onServer($command) {
+        return $this->runCommandOnServer($command, ['log' => true]);
     }
 
     public function runCommandOnClient(Application $app, $command) {
@@ -62,7 +78,8 @@ class TaskManager {
             $this->output->writeln('');
         }
 
-        $request = curl_init($this->config['server.url'] . '?command=' . urlencode($command) . '&config=' . urlencode(json_encode($this->getServerConfig())));
+        $url = $this->config['server.url'] . '?command=' . urlencode($command) . '&config=' . urlencode(json_encode($this->getServerConfig()));
+        $request = curl_init($url);
 
         if($options['captureOutput']) {
             curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
