@@ -1,0 +1,26 @@
+{
+    "name": "atomic-deploy/client",
+    "description": "Zero downtime deployment using just FTP and PHP",
+    "require": {
+        "illuminate/filesystem": "^5.1",
+        "touki/ftp": "^1.2",
+        "symfony/console": "~3.0.0",
+        "symfony/process": "~3.0.0",
+        "symfony/debug": "^3.0",
+        "vlucas/phpdotenv": "^2.2"
+    },
+    "bin": ["bin/client"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chris Chamberlain",
+            "email": "c.chamberlain@iinet.net.au"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "AtomicDeploy\\Client\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}

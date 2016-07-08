@@ -1,0 +1,36 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use AtomicDeploy\Client\Config;
+use AtomicDeploy\Client\Vendor\LFTPVendorUpdater;
+use AtomicDeploy\Client\Console\Application;
+use AtomicDeploy\Client\Console\CleanupCommand;
+use AtomicDeploy\Client\Console\ComposerTransferInstalledCommand;
+use AtomicDeploy\Client\Console\GitFtpCommand;
+use AtomicDeploy\Client\Console\VersionsCommand;
+use AtomicDeploy\Client\Console\PushCommand;
+use AtomicDeploy\Client\Console\RunCommand;
+use AtomicDeploy\Client\Console\UseCommand;
+
+date_default_timezone_set('UTC');
+
+$dotenv = new Dotenv\Dotenv(getcwd());
+$path = getcwd() . '/.env';
+if(file_exists($path)) {
+    echo 'Loading environment configuration from ' . $path . "\n";
+    $dotenv->load();
+}
+
+$config = new Config(require getcwd() . '/deploy.php');
+
+$application = new Application($config, 'AtomicDeploy Client', '0.1.0');
+$application->add(new GitFtpCommand());
+$application->add(new ComposerTransferInstalledCommand(new LFTPVendorUpdater($config)));
+$application->add(new PushCommand());
+$application->add(new VersionsCommand());
+$application->add(new UseCommand());
+$application->add(new RunCommand());
+$application->add(new CleanupCommand());
+$application->run();
