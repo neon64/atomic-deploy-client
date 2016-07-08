@@ -1,7 +1,17 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+function includeIfExists($file) {
+    return file_exists($file) ? include $file : false;
+}
+if (
+    (!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) &&
+    (!$loader = includeIfExists(__DIR__.'/../../../autoload.php'))
+   ) {
+    echo 'You must set up the project dependencies using `composer install`'.PHP_EOL.
+        'See https://getcomposer.org/download/ for instructions on installing Composer'.PHP_EOL;
+    exit(1);
+}
 
 use AtomicDeploy\Client\Config;
 use AtomicDeploy\Client\Vendor\LFTPVendorUpdater;
@@ -9,7 +19,7 @@ use AtomicDeploy\Client\Console\Application;
 use AtomicDeploy\Client\Console\CleanupCommand;
 use AtomicDeploy\Client\Console\ComposerTransferInstalledCommand;
 use AtomicDeploy\Client\Console\GitFtpCommand;
-use AtomicDeploy\Client\Console\VersionsCommand;
+use AtomicDeploy\Client\Console\ListCommand;
 use AtomicDeploy\Client\Console\PushCommand;
 use AtomicDeploy\Client\Console\RunCommand;
 use AtomicDeploy\Client\Console\UseCommand;
@@ -29,7 +39,7 @@ $application = new Application($config, 'AtomicDeploy Client', '0.1.0');
 $application->add(new GitFtpCommand());
 $application->add(new ComposerTransferInstalledCommand(new LFTPVendorUpdater($config)));
 $application->add(new PushCommand());
-$application->add(new VersionsCommand());
+$application->add(new ListCommand());
 $application->add(new UseCommand());
 $application->add(new RunCommand());
 $application->add(new CleanupCommand());

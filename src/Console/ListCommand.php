@@ -9,11 +9,11 @@ use AtomicDeploy\Client\Config;
 use AtomicDeploy\Client\Git;
 use AtomicDeploy\Client\TaskManager;
 
-class VersionsCommand extends Command {
+class ListCommand extends Command {
 
     protected function configure() {
-        $this->setName('versions')
-             ->setDescription('Lists the versions of the project');
+        $this->setName('ls')
+             ->setDescription('Lists the deployments of the project');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
