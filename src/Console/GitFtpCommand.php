@@ -31,7 +31,7 @@ class GitFtpCommand extends Command {
         }
 
         $command = [
-            __DIR__ . '/../../lib/git-ftp/git-ftp',
+            __DIR__ . '/../../bin/git-ftp',
             escapeshellarg($mode),
             '-u', escapeshellarg($config['ftp.username']),
             '-p', escapeshellarg($config['ftp.password']),
