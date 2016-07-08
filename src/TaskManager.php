@@ -20,23 +20,24 @@ class TaskManager {
     public function listDeploymentsOnServer() {
         $skip = [$this->config['path.shared'], $this->config['path.current'], $this->config['path.next']];
         $deployments = explode("\n", $this->runCommandOnServer('ls .', ['captureOutput' => true]));
+        $return = [];
         foreach($deployments as $deployment) {
             if(in_array($deployment, $skip)) {
                 continue;
             }
             $return[] = $deployment;
         }
-        return $deployments;
+        return $return;
     }
 
     public function runShellCommandOnClient($command, $currentWorkingDirectory = null) {
         $process = new Process($command, $currentWorkingDirectory);
         $process->setTimeout(0);
-        $process->run(function ($type, $buffer) use($output) {
-            if (Process::ERR === $type && $output instanceof ConsoleOutputInterface) {
-                $output->getErrorOutput()->write($buffer);
+        $process->run(function ($type, $buffer) {
+            if (Process::ERR === $type && $this->output instanceof ConsoleOutputInterface) {
+                $this->output->getErrorOutput()->write($buffer);
             } else {
-                $output->write($buffer);
+                $this->output->write($buffer);
             }
         });
         if(!$process->isSuccessful()) {
@@ -72,13 +73,14 @@ class TaskManager {
             $options['log'] = false;
         }
 
+        $url = $this->config['server.url'] . '?command=' . urlencode($command) . '&config=' . urlencode(json_encode($this->getServerConfig()));
+
         if($options['log']) {
             $this->output->writeln('');
             $this->output->writeln('<comment>[Server]</comment> ' . $command);
             $this->output->writeln('');
         }
 
-        $url = $this->config['server.url'] . '?command=' . urlencode($command) . '&config=' . urlencode(json_encode($this->getServerConfig()));
         $request = curl_init($url);
 
         if($options['captureOutput']) {
@@ -110,6 +112,7 @@ class TaskManager {
     private function getServerConfig() {
         return [
             'path' => $this->config['path'],
+            'copy' => $this->config['copy'],
             'basePath' => $this->config['basePath'],
             'shared' => $this->config['shared']
         ];

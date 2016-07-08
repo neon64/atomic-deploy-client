@@ -1,6 +1,5 @@
 <?php
 
-
 namespace AtomicDeploy\Client\Console;
 
 use Symfony\Component\Console\Command\Command;
@@ -18,7 +17,7 @@ class GitFtpCommand extends Command {
         $this
             ->setName('git:ftp')
             ->setDescription('Updates files tracked by Git using git-ftp')
-            ->addArgument('mode', InputArgument::REQUIRED, 'either `push` or `init`')
+            ->addArgument('mode', InputArgument::REQUIRED, 'either `push`, `init` or `catchup`')
             ->addArgument('name', InputArgument::REQUIRED, 'the deployment to update')
         ;
     }
@@ -26,13 +25,26 @@ class GitFtpCommand extends Command {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $name = $input->getArgument('name');
         $mode = $input->getArgument('mode');
-        if($mode !== 'push' && $mode !== 'init') {
-            throw new InvalidArgumentException('`mode` must be one of: `push`, `init`');
+        if($mode !== 'push' && $mode !== 'init' && $mode !== 'catchup') {
+            throw new InvalidArgumentException('`mode` must be one of: `push`, `init`, `catchup`');
         }
+
+        $config = $this->getApplication()->getConfig();
+
+        /*$gitFtpIgnore = [];
+        foreach($config['shared'] as $path) {
+            if(is_dir($path)) {
+                $gitFtpIgnore[] = $path . '/*';
+            } else {
+                $gitFtpIgnore[] = $path;
+            }
+        }
+        file_put_contents('.git-ftp-ignore', implode("\n", $gitFtpIgnore));*/
 
         $command = [
             __DIR__ . '/../../bin/git-ftp',
             escapeshellarg($mode),
+            '-v',
             '-u', escapeshellarg($config['ftp.username']),
             '-p', escapeshellarg($config['ftp.password']),
             escapeshellarg($config['ftp.host'] . ':' . $config['ftp.port'] . '/' . $config['basePath.ftp'] . '/' . $name)
@@ -42,7 +54,7 @@ class GitFtpCommand extends Command {
         $output->writeln('<info>Executing</info> ' . $command);
 
         $run = new TaskManager($this->getApplication()->getConfig(), $output);
-        $run->runShellCommandOnClient($command, $output);
+        $run->runShellCommandOnClient($command);
     }
 
 }

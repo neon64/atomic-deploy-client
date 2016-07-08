@@ -15,6 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use AtomicDeploy\Client\Config;
 use AtomicDeploy\Client\Json;
 use AtomicDeploy\Client\Vendor\VendorUpdater;
+use AtomicDeploy\Client\Vendor\VendorUpdateOperation;
 use Touki\FTP\Connection\Connection;
 use Touki\FTP\FTPFactory;
 use Touki\FTP\Model\Directory;
@@ -35,7 +36,7 @@ class ComposerTransferInstalledCommand extends Command {
 
     protected $deployName;
 
-    public function __construct(VendorUpdater $transfer) {
+    public function __construct(VendorUpdater $vendorUpdater) {
         parent::__construct();
         $this->vendorUpdater = $vendorUpdater;
         $this->installedDotJsonPath = $this->vendorPath . '/composer/installed.json';
@@ -91,10 +92,10 @@ class ComposerTransferInstalledCommand extends Command {
         $output->writeln(count($changed) . ' updated packages to transfer');
 
         if(count($changed) > 0 || $input->getOption('force')) {
-            $transfer = new Transfer();
-            $transfer->vendorPath = $this->vendorPath;
-            $transfer->changedPackages = $changed;
-            $this->vendorUpdater->transfer($this->output, $this->deployName, $transfer);
+            $op = new VendorUpdateOperation();
+            $op->vendorPath = $this->vendorPath;
+            $op->changedPackages = $changed;
+            $this->vendorUpdater->update($this->output, $this->deployName, $op);
 
             $this->putExtraFiles();
         } else {

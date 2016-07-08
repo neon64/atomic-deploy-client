@@ -12,6 +12,8 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use AtomicDeploy\Client\Config;
+use AtomicDeploy\Client\Git;
+use AtomicDeploy\Client\TaskManager;
 
 class PushCommand extends Command {
 
@@ -28,8 +30,9 @@ class PushCommand extends Command {
         $next = $config['path.next'];
 
         $run = new TaskManager($config, $output);
+        $git = new Git($config, $output);
 
-        $head = $run->getCurrentCommit();
+        $head = $git->getCurrentCommit();
         $output->writeln('<info>Current commit hash:</info> ' . $head);
 
         $deployments = $run->listDeploymentsOnServer();

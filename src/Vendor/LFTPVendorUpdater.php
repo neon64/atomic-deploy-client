@@ -20,7 +20,7 @@ class LFTPVendorUpdater implements VendorUpdater {
      * @param                                                   $directory
      * @param Transfer                                          $transfer
      */
-    public function transfer(OutputInterface $output, $directory, VendorTransferOperation $transfer) {
+    public function update(OutputInterface $output, $directory, VendorUpdateOperation $transfer) {
         $command = $this->getLFTPTransferCommand($output, $directory, $transfer);
         if($output->isVeryVerbose()) {
             $output->writeln('<info>Executing the whopper:</info>' . "\n" . $command);
@@ -32,7 +32,7 @@ class LFTPVendorUpdater implements VendorUpdater {
         $run->runShellCommandOnClient($command);
     }
 
-    protected function getLFTPTransferCommand(OutputInterface $output, $directory, Transfer $transfer) {
+    protected function getLFTPTransferCommand(OutputInterface $output, $directory, VendorUpdateOperation $transfer) {
         $command = 'lftp -c ';
         $exec = [];
         $exec[] = 'open -u ' . $this->config['ftp.username'] . ',' . $this->config['ftp.password'] . ' -p ' . $this->config['ftp.port'] . ' ' . $this->config['ftp.host'];
@@ -58,7 +58,7 @@ class LFTPVendorUpdater implements VendorUpdater {
         return $command;
     }
 
-    private function getLFTPExcludeInfo(Transfer $transfer) {
+    private function getLFTPExcludeInfo(VendorUpdateOperation $transfer) {
         $info = [];
         foreach($this->config['copy.excludePaths'] as $path) {
             if(starts_with($path, $transfer->vendorPath)) {
@@ -73,7 +73,7 @@ class LFTPVendorUpdater implements VendorUpdater {
         return implode(' ', $info);
     }
 
-    protected function getRemoteBasePath(Config $config, $name) {
+    protected function getRemoteBasePath($name) {
         return $this->config['basePath.ftp'] . '/' . $name;
     }
 }

@@ -3,7 +3,7 @@
 
 namespace AtomicDeploy\Client\Vendor;
 
-class VendorTransferOperation {
+class VendorUpdateOperation {
 
     public $vendorPath;
     public $changedPackages;

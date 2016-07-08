@@ -6,6 +6,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 interface VendorUpdater {
 
-    public function transfer(OutputInterface $output, $directory, VendorTransferOperation $transfer);
+    public function update(OutputInterface $output, $directory, VendorUpdateOperation $transfer);
 
 }
