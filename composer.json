@@ -9,7 +9,7 @@
         "symfony/debug": "^3.0",
         "vlucas/phpdotenv": "^2.2"
     },
-    "bin": ["bin/adp"],
+    "bin": ["bin/adp", "bin/git-ftp"],
     "license": "MIT",
     "authors": [
         {
