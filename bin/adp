@@ -27,13 +27,19 @@ use AtomicDeploy\Client\Console\UseCommand;
 date_default_timezone_set('UTC');
 
 $dotenv = new Dotenv\Dotenv(getcwd());
-$path = getcwd() . '/.env';
-if(file_exists($path)) {
-    echo 'Loading environment configuration from ' . $path . "\n";
+$envPath = getcwd() . '/.env';
+if(file_exists($envPath)) {
+    echo 'Loading environment configuration from ' . $envPath . "\n";
     $dotenv->load();
 }
 
-$config = new Config(require getcwd() . '/deploy.php');
+$configPath = getcwd() . '/deploy.php';
+if(!file_exists($configPath)) {
+    echo "Please create a `deploy.php` file in the current directory, and fill in the required configuration before continuing.\nAborting...";
+    die;
+}
+
+$config = new Config(require $configPath);
 
 $application = new Application($config, 'AtomicDeploy Client', '0.1.0');
 $application->add(new GitFtpCommand());
