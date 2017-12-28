@@ -102,10 +102,10 @@ class TaskManager {
         curl_setopt($request, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($request, CURLOPT_USERPWD, $this->config['server.username'] . ":" . $this->config['server.password']);
         $return = curl_exec($request);
-        curl_close($request);
         if($return === false) {
             throw new \Exception('cURL returned an error ' . curl_error($request));
         }
+        curl_close($request);
         return trim($return);
     }
 
