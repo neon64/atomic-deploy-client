@@ -4,8 +4,8 @@
     "require": {
         "illuminate/filesystem": "^6.0",
         "touki/ftp": "^1.2",
-        "symfony/console": "^5.0.7",
-        "symfony/process": "^5.0.7",
+        "symfony/console": "^4.3.4",
+        "symfony/process": "^4.3.4",
         "symfony/debug": "^4.4.7",
         "vlucas/phpdotenv": "^4.1.3"
     },

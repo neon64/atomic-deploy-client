@@ -1,3 +1,4 @@
 /vendor
 .idea
 /lib/git-ftp
+composer.lock
