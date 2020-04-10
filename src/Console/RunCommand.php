@@ -20,6 +20,8 @@ class RunCommand extends Command {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $run = new TaskManager($this->getApplication()->getConfig(), $output);
         $run->onServer($input->getArgument('task'));
+
+        return 0;
     }
 
 }

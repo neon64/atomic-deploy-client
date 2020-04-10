@@ -78,6 +78,8 @@ class PushCommand extends Command {
         $output->writeln("This script will now run some extra tasks in preparation for the next deployment.\nYou may cancel them if you want, but it will just make things slower for next time.");
 
         $run->onServer('cp ' . $current . ' ' . $next, ['useBuffer' => false]);
+
+        return 0;
     }
 
 }

@@ -2,6 +2,8 @@
 
 namespace AtomicDeploy\Client;
 
+use Illuminate\Support\Arr;
+
 /**
  * A really naive global object to store deployment config.
  */
@@ -12,11 +14,11 @@ class Config implements \ArrayAccess {
     }
 
     public function offsetGet($offset) {
-        return array_get($this->config, $offset);
+        return Arr::get($this->config, $offset);
     }
 
     public function offsetSet($offset, $value) {
-        array_set($this->config, $offset, $value);
+        Arr::set($this->config, $offset, $value);
     }
 
     public function offsetExists($offset) {

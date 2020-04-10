@@ -43,18 +43,19 @@ class GitFtpCommand extends Command {
 
         $command = [
             __DIR__ . '/../../bin/git-ftp',
-            escapeshellarg($mode),
+            $mode,
             '-v',
-            '-u', escapeshellarg($config['ftp.username']),
-            '-p', escapeshellarg($config['ftp.password']),
-            escapeshellarg($config['ftp.host'] . ':' . $config['ftp.port'] . '/' . $config['basePath.ftp'] . '/' . $name)
+            '-u', $config['ftp.username'],
+            '-p', $config['ftp.password'],
+            $config['ftp.host'] . ':' . $config['ftp.port'] . '/' . $config['basePath.ftp'] . '/' . $name
         ];
-        $command = implode(' ', $command);
 
-        $output->writeln('<info>Executing</info> ' . $command);
+        $output->writeln('<info>Executing</info> ' . implode(' ', $command));
 
         $run = new TaskManager($this->getApplication()->getConfig(), $output);
         $run->runShellCommandOnClient($command);
+
+        return 0;
     }
 
 }

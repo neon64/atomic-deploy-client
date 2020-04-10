@@ -34,6 +34,8 @@ class UseCommand extends Command {
             $version = $helper->ask($input, $output, $question);
         }
         $run->onServer('link:update ' . $this->getApplication()->getConfig()['path.current'] . ' ' . $version);
+
+        return 0;
     }
 
 }

@@ -50,6 +50,8 @@ class CleanupCommand extends Command {
             }
             $run->onServer('rm ' . $item);
         }
+
+        return 0;
     }
 
 }

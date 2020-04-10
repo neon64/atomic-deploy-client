@@ -26,7 +26,7 @@ use AtomicDeploy\Client\Console\UseCommand;
 
 date_default_timezone_set('UTC');
 
-$dotenv = new Dotenv\Dotenv(getcwd());
+$dotenv = Dotenv\Dotenv::createImmutable(getcwd());
 $envPath = getcwd() . '/.env';
 if(file_exists($envPath)) {
     echo 'Loading environment configuration from ' . $envPath . "\n";

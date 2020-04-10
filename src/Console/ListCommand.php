@@ -37,6 +37,7 @@ class ListCommand extends Command {
             //$output->writeln(' - ' . $deployment);
         }
 
+        return 0;
     }
 
 }

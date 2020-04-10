@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use AtomicDeploy\Client\Config;
+use Illuminate\Support\Str;
 
 class TaskManager {
 
@@ -87,7 +88,7 @@ class TaskManager {
             curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
         } else {
             curl_setopt($request, CURLOPT_WRITEFUNCTION, function($cp, $data) {
-                if(str_contains($data, 'STOP_DEPLOYMENT')) {
+                if(Str::contains($data, 'STOP_DEPLOYMENT')) {
                     throw new \Exception('Server Task Failed');
                 }
                 $this->output->write($data);

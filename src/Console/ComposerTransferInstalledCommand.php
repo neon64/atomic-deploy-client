@@ -103,6 +103,8 @@ class ComposerTransferInstalledCommand extends Command {
         }
 
         $this->numTransferred = count($changed);
+
+        return 0;
     }
 
     /**

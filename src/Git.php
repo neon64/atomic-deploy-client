@@ -17,7 +17,7 @@ class Git {
     }
 
     public function getCurrentCommit() {
-        $process = new Process('git rev-parse --short HEAD');
+        $process = new Process(['git', 'rev-parse', '--short', 'HEAD']);
         $process->run();
         if(!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
@@ -26,7 +26,14 @@ class Git {
     }
 
     public function getCommitInfo($hash) {
-        $process = new Process('git show --format=' . escapeshellarg($this->output->getFormatter()->format('<comment>%h</comment> <info>%s</info> - by %an, commited on %ad')) . ' --abbrev-commit --quiet ' . escapeshellcmd($hash));
+        $process = new Process([
+            'git',
+            'show',
+            '--format=' . escapeshellarg($this->output->getFormatter()->format('<comment>%h</comment> <info>%s</info> - by %an, commited on %ad')),
+            '--abbrev-commit',
+            '--quiet',
+             escapeshellcmd($hash)
+        ]);
         $process->run();
         if(!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
