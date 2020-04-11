@@ -8,6 +8,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use AtomicDeploy\Client\Config;
 use AtomicDeploy\Client\TaskManager;
+use Illuminate\Support\Str;
 
 class LFTPVendorUpdater implements VendorUpdater {
 
@@ -61,7 +62,7 @@ class LFTPVendorUpdater implements VendorUpdater {
     private function getLFTPExcludeInfo(VendorUpdateOperation $transfer) {
         $info = [];
         foreach($this->config['copy.excludePaths'] as $path) {
-            if(starts_with($path, $transfer->vendorPath)) {
+            if(Str::startsWith($path, $transfer->vendorPath)) {
                 $trimmedPath = substr($path, strlen($transfer->vendorPath));
                 $info[] = '--exclude ' . escapeshellarg($trimmedPath);
             }

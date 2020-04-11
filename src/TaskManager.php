@@ -20,7 +20,7 @@ class TaskManager {
 
     public function listDeploymentsOnServer() {
         $skip = [$this->config['path.shared'], $this->config['path.current'], $this->config['path.next']];
-        $deployments = explode("\n", $this->runCommandOnServer('ls .', ['captureOutput' => true]));
+        $deployments = explode("\n", $this->runCommandOnServer(['ls', '.'], ['captureOutput' => true]));
         $return = [];
         foreach($deployments as $deployment) {
             if(in_array($deployment, $skip)) {
@@ -74,11 +74,16 @@ class TaskManager {
             $options['log'] = false;
         }
 
-        $url = $this->config['server.url'] . '?command=' . urlencode($command) . '&config=' . urlencode(json_encode($this->getServerConfig()));
+        $commandJson = json_encode($command);
+        if(json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception('Invalid JSON: ' . json_last_error_msg());
+        }
+
+        $url = $this->config['server.url'] . '?command=' . urlencode($commandJson) . '&config=' . urlencode(json_encode($this->getServerConfig()));
 
         if($options['log']) {
             $this->output->writeln('');
-            $this->output->writeln('<comment>[Server]</comment> ' . $command);
+            $this->output->writeln('<comment>[Server]</comment> ' . implode(' ', $command));
             $this->output->writeln('');
         }
 

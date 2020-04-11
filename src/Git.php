@@ -29,10 +29,10 @@ class Git {
         $process = new Process([
             'git',
             'show',
-            '--format=' . escapeshellarg($this->output->getFormatter()->format('<comment>%h</comment> <info>%s</info> - by %an, commited on %ad')),
+            '--format=' . $this->output->getFormatter()->format('<comment>%h</comment> <info>%s</info> - by %an, commited on %ad'),
             '--abbrev-commit',
             '--quiet',
-             escapeshellcmd($hash)
+            $hash
         ]);
         $process->run();
         if(!$process->isSuccessful()) {
@@ -43,7 +43,7 @@ class Git {
 
     public function getCurrentCommitOnServer(TaskManager $taskManager) {
         return $taskManager->runCommandOnServer(
-            'link:read ' . $this->config['path.current'],
+            ['link:read', $this->config['path.current']],
             ['captureOutput' => true]
         );
     }

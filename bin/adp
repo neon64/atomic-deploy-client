@@ -41,12 +41,13 @@ if(!file_exists($configPath)) {
 
 $config = new Config(require $configPath);
 
+$default = new RunCommand();
 $application = new Application($config, 'AtomicDeploy Client', '0.1.0');
 $application->add(new GitFtpCommand());
 $application->add(new ComposerTransferInstalledCommand(new LFTPVendorUpdater($config)));
 $application->add(new PushCommand());
 $application->add(new ListCommand());
 $application->add(new UseCommand());
-$application->add(new RunCommand());
+$application->add($default);
 $application->add(new CleanupCommand());
 $application->run();
