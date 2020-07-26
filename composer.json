@@ -7,8 +7,8 @@
         "symfony/console": "^4.3.4",
         "symfony/process": "^4.3.4",
         "symfony/debug": "^4.4.7",
-        "vlucas/phpdotenv": "^3.6.2",
-      "ext-json": "*",
+        "vlucas/phpdotenv": "~4.0",
+        "ext-json": "*",
         "ext-curl": "*"
     },
     "bin": ["bin/adp", "bin/git-ftp"],
