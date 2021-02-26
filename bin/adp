@@ -28,8 +28,16 @@ date_default_timezone_set('UTC');
 
 $dotenv = Dotenv\Dotenv::createImmutable(getcwd());
 $envPath = getcwd() . '/.env';
+
+$silent = false;
+if(count($argv) >= 3 && $argv[1] == 'run' && $argv[2] == 'script') {
+    $silent = true;
+}
+
 if(file_exists($envPath)) {
-    echo 'Loading environment configuration from ' . $envPath . "\n";
+    if(!$silent) {
+        echo 'Loading environment configuration from ' . $envPath . "\n";
+    }
     $dotenv->load();
 }
 
@@ -41,13 +49,9 @@ if(!file_exists($configPath)) {
 
 $config = new Config(require $configPath);
 
-$default = new RunCommand();
 $application = new Application($config, 'AtomicDeploy Client', '0.1.0');
-$application->add(new GitFtpCommand());
-$application->add(new ComposerTransferInstalledCommand(new LFTPVendorUpdater($config)));
-$application->add(new PushCommand());
 $application->add(new ListCommand());
 $application->add(new UseCommand());
-$application->add($default);
+$application->add(new RunCommand());
 $application->add(new CleanupCommand());
 $application->run();

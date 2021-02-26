@@ -22,7 +22,7 @@ class RunCommand extends Command {
 
         $args = $input->getArgument('task');
 
-        $run->onServer($args);
+        $run->runCommandOnServer($args, ['log' => false]);
 
         return 0;
     }

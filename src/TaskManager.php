@@ -73,6 +73,9 @@ class TaskManager {
         if(!isset($options['log'])) {
             $options['log'] = false;
         }
+        if(!isset($options['silent'])) {
+            $options['silent'] = false;
+        }
 
         $commandJson = json_encode($command);
         if(json_last_error() !== JSON_ERROR_NONE) {
